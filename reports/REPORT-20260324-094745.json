@@ -1,0 +1,141 @@
+{
+  "report_id": "REPORT-20260324-094745",
+  "timestamp": "2026-03-24T09:47:45.514777",
+  "executive_summary": "Analysis Summary:\n- Analyzed 38 log entries from 14 unique sources\n- Identified 8 security threats\n- Overall security posture: MEDIUM - Plan action within 1 week\n- Critical vulnerabilities: 1\n- Immediate actions recommended for threat mitigation",
+  "analysis_period": {
+    "start": "2026-03-24T09:47:45.510176",
+    "end": "2026-03-24T09:47:45.514782"
+  },
+  "findings": {
+    "reconnaissance": {
+      "total_logs_analyzed": 38,
+      "unique_sources": 14,
+      "unique_endpoints": 18,
+      "anomalies_detected": 15,
+      "server_info": {
+        "web_server": "Apache/2.4.41",
+        "php_version": "7.4.3",
+        "detected_endpoints": [
+          "/api/users",
+          "/api/auth/login",
+          "/api/products"
+        ],
+        "technologies": [
+          "PHP",
+          "MySQL",
+          "jQuery"
+        ],
+        "cms_detected": "WordPress (likely)",
+        "ssl_enabled": true
+      }
+    },
+    "vulnerabilities": {
+      "total_vulnerabilities": 8,
+      "by_severity": {
+        "Medium": 4,
+        "High": 3,
+        "Critical": 1
+      },
+      "critical_findings": [
+        {
+          "id": "VULN-005",
+          "type": "brute_force",
+          "cvss_score": 9.8,
+          "severity": "Critical",
+          "cwe": "CWE-307",
+          "evidence": {
+            "source_ip": "203.0.113.46",
+            "uri": null,
+            "pattern": "N/A"
+          }
+        }
+      ],
+      "high_findings": [
+        {
+          "id": "VULN-004",
+          "type": "path_traversal",
+          "cvss_score": 7.5,
+          "severity": "High",
+          "cwe": "CWE-22",
+          "evidence": {
+            "source_ip": "193.0.113.99",
+            "uri": "/../../../etc/passwd",
+            "pattern": "../"
+          }
+        },
+        {
+          "id": "VULN-006",
+          "type": "ddos_pattern",
+          "cvss_score": 7.5,
+          "severity": "High",
+          "cwe": "CWE-400",
+          "evidence": {
+            "source_ip": "203.0.113.46",
+            "uri": null,
+            "pattern": "N/A"
+          }
+        },
+        {
+          "id": "VULN-007",
+          "type": "ddos_pattern",
+          "cvss_score": 7.5,
+          "severity": "High",
+          "cwe": "CWE-400",
+          "evidence": {
+            "source_ip": "203.0.113.48",
+            "uri": null,
+            "pattern": "N/A"
+          }
+        }
+      ]
+    }
+  },
+  "recommendations": [
+    "Implement Web Application Firewall (WAF) rules for detected attack patterns",
+    "Enable rate limiting to prevent brute force attacks",
+    "Update input validation routines to prevent injection attacks",
+    "Implement Content Security Policy (CSP) headers to mitigate XSS",
+    "Monitor source IPs from threat intelligence databases",
+    "Review access logs for unauthorized data access",
+    "Conduct security awareness training for development team"
+  ],
+  "alerts": [
+    {
+      "alert_id": "ALERT-005",
+      "severity": "High",
+      "title": "path_traversal - High",
+      "description": "Security threat detected: path_traversal (CVSS: 7.5)",
+      "source": "193.0.113.99",
+      "timestamp": "2026-03-24T09:47:45.514210",
+      "action": "Review and respond immediately"
+    },
+    {
+      "alert_id": "ALERT-006",
+      "severity": "Critical",
+      "title": "brute_force - Critical",
+      "description": "Security threat detected: brute_force (CVSS: 9.8)",
+      "source": "203.0.113.46",
+      "timestamp": "2026-03-24T09:47:45.514222",
+      "action": "Review and respond immediately"
+    },
+    {
+      "alert_id": "ALERT-007",
+      "severity": "High",
+      "title": "ddos_pattern - High",
+      "description": "Security threat detected: ddos_pattern (CVSS: 7.5)",
+      "source": "203.0.113.46",
+      "timestamp": "2026-03-24T09:47:45.514230",
+      "action": "Review and respond immediately"
+    },
+    {
+      "alert_id": "ALERT-008",
+      "severity": "High",
+      "title": "ddos_pattern - High",
+      "description": "Security threat detected: ddos_pattern (CVSS: 7.5)",
+      "source": "203.0.113.48",
+      "timestamp": "2026-03-24T09:47:45.514235",
+      "action": "Review and respond immediately"
+    }
+  ],
+  "overall_risk_level": 5.125
+}

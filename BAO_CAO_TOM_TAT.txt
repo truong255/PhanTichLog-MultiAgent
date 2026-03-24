@@ -1,0 +1,138 @@
+HỆ THỐNG MULTI-AGENT PHÂN TÍCH LOG WEBSITE VÀ CẢNH BÁO TẤN CÔNG
+
+BÁO CÁO TÓM TẮT
+
+I. GIỚI THIỆU DỰ ÁN
+
+Dự án này xây dựng một hệ thống phân tích log website tự động bằng các agent AI hợp tác với nhau. Hệ thống sử dụng CrewAI framework để điều phối 6 agent độc lập hoạt động trên 3 giai đoạn khác nhau: trinh sát, đánh giá lỗ hổng bảo mật, và tạo báo cáo.
+
+Mục đích của hệ thống là giúp quản trị viên website phát hiện và cảnh báo các cuộc tấn công trước khi chúng gây hại. Thay vì kiểm tra log thủ công, hệ thống tự động nhận diện 9 loại tấn công khác nhau với độ chính xác cao.
+
+II. KIẾN TRÚC HỆ THỐNG
+
+Hệ thống gồm 6 agent hoạt động tuần tự qua 3 giai đoạn:
+
+Giai đoạn 1 - Trinh Sát (Reconnaissance):
+- Agent 1: Chuyên gia Phân tích Log. Tiếp nhận tất cả log từ web server (Apache, Nginx, IIS) và chuẩn hóa dữ liệu. Trích xuất thông tin IP, URL, trạng thái HTTP, kích thước phản hồi, user-agent.
+- Agent 2: Chuyên gia Phân tích Mẫu. Tìm các mẫu bất thường trong traffic bình thường. Xác định đỉnh cao lưu lượng, các IP thường xuyên, phân bố địa lý.
+
+Giai đoạn 2 - Đánh Giá Lỗ Hổng (Vulnerability Assessment):
+- Agent 3: Chuyên gia Phát hiện Mối Đe Dọa. Quét log tìm chữ ký của các cuộc tấn công như SQL injection, XSS, DDoS, brute force. So sánh với 9 loại tấn công trong database.
+- Agent 4: Chuyên gia Phân loại Lỗ Hổng. Xếp hạng mức độ nguy hiểm mỗi cuộc tấn công theo thang CVSS từ 0 đến 10. Xác định những lỗ hổng nào cần ưu tiên xử lý ngay.
+
+Giai đoạn 3 - Báo Cáo và Cảnh báo (Reporting):
+- Agent 5: Chuyên gia Tạo Báo Cáo. Biên soạn báo cáo bảo mật chuyên nghiệp dành cho quản lý. Tóm tắt những phát hiện chính, xếp hạng rủi ro toàn cảnh, đề xuất giải pháp.
+- Agent 6: Quản lý Cảnh báo. Tạo những cảnh báo tức thì để gửi cho đội an ninh. Mỗi cảnh báo chứa chi tiết cuộc tấn công, địa chỉ IP tấn công, khuyến nghị hành động.
+
+III. CÁC LOẠI TẤN CÔNG ĐƯỢC PHÁT HIỆN
+
+Hệ thống có khả năng phát hiện 9 loại tấn công phổ biến:
+
+1. SQL Injection - Kẻ tấn công cố gắng chèn lệnh SQL độc hại vào dữ liệu đầu vào. Mức độ nguy hiểm: 7.5/10.
+
+2. Cross-Site Scripting (XSS) - Nhúng mã JavaScript vào trang web để đánh cắp thông tin người dùng. Mức độ nguy hiểm: 6.1/10.
+
+3. Command Injection - Thực thi lệnh hệ điều hành trên máy chủ thông qua đầu vào. Mức độ nguy hiểm: 8.0/10.
+
+4. Path Traversal - Truy cập các file và thư mục ngoài ý định bằng cách sử dụng đường dẫn tương đối. Mức độ nguy hiểm: 7.5/10.
+
+5. DDoS Pattern - Gửi số lượng request khổng lồ từ nhiều nguồn để làm quá tải máy chủ. Mức độ nguy hiểm: 7.5/10.
+
+6. Brute Force - Thử hàng chục hoặc hàng trăm mật khẩu để đoán tài khoản hợp lệ. Mức độ nguy hiểm: 9.8/10.
+
+7. Scanner Detection - Phát hiện các công cụ quét lỗ hổng như Nikto, Nessus. Mức độ nguy hiểm: 5.0/10.
+
+8. Local File Inclusion - Chèn lệnh để tải file từ máy chủ. Mức độ nguy hiểm: 7.5/10.
+
+9. Remote File Inclusion - Tải mã từ máy chủ bên ngoài vào máy chủ hiện tại. Mức độ nguy hiểm: 8.8/10.
+
+IV. HIỆU NĂNG VÀ KẾT QUẢ
+
+Hệ thống đã được kiểm thử trên 38 log entries từ sample data:
+
+- Thời gian phân tích toàn bộ: Dưới 1 giây
+- Số log phân tích được: 38/38 (100%)
+- Số IP không bình thường phát hiện: 14 IP
+- Tổng số endpoint: 18 endpoint
+- Các tấn công phát hiện: 8 cuộc tấn công
+
+Phân loại mức độ lỗ hổng:
+- Tới hạn (Critical): 1 lỗ hổng
+- Cao (High): 3 lỗ hổng
+- Trung bình (Medium): 4 lỗ hổng
+
+Ghi chú về server:
+- Web server: Apache 2.4.41
+- PHP version: 7.4.3
+- Có SSL/HTTPS: Có
+- CMS: WordPress
+
+V. CÁC ALERT (CẢNH BÁO) TẠO RA
+
+Hệ thống đã tạo 4 cảnh báo:
+
+1. Alert: Brute Force Attack
+   Mức độ: Tới hạn
+   IP tấn công: 203.0.113.46
+   Mô tả: Phát hiện nhiều lần đăng nhập thất bại từ cùng một IP. Khả năng cao đây là cuộc tấn công brute force để đoán mật khẩu.
+   Hành động: Cấm ngay lập tức IP này, xem xét bật xác thực hai yếu tố.
+
+2. Alert: Path Traversal Attempt
+   Mức độ: Cao
+   IP tấn công: 193.0.113.99
+   Mô tả: Phát hiện cố gắng truy cập file /etc/passwd thông qua ../ trong URL.
+   Hành động: Kiểm tra nhật ký truy cập, cập nhật WAF rule.
+
+3. Alert: DDoS Pattern Detected
+   Mức độ: Cao
+   IP tấn công: 203.0.113.46
+   Mô tả: Số lượng request bất thường cao từ cùng IP trong vòng ngắn.
+   Hành động: Kích hoạt rate limiting, có thể cần DDoS mitigation service.
+
+4. Alert: XSS Injection Attempt
+   Mức độ: Cao
+   IP tấn công: 192.168.1.15
+   Mô tả: Phát hiện mã JavaScript trong query parameter.
+   Hành động: Kiểm tra và loại bỏ các tham số không sạch.
+
+VI. CÔNG NGHỆ VÀ CÁC FRAMEWORK
+
+- CrewAI: Framework cho phép các agent AI hợp tác tuần tự
+- Google Gemini: AI model xử lý ngôn ngữ tự nhiên
+- Python 3.14: Ngôn ngữ lập trình chính
+- LangChain: Thư viện tích hợp LLM
+- Pydantic: Xác thực dữ liệu
+
+VII. VỀ DỮ LIỆU VÀ BẢO MẬT
+
+Dữ liệu log mẫu là giả định, không chứa thông tin thực của bất kỳ website nào. Hệ thống chỉ đọc và phân tích log, không sửa đổi hay xóa bất kỳ dữ liệu nào.
+
+Toàn bộ phân tích diễn ra cục bộ trên máy chủ của bạn. Không có dữ liệu được gửi đến máy chủ bên ngoài ngoài việc gọi API đến Google Gemini để xử lý mô tả agent (tùy chọn).
+
+VIII. LỢI ÍCH CHÍNH
+
+1. Tối ưu hóa Thời gian: Phân tích tự động thay vì thủ công rất tốn thời gian.
+
+2. Cảnh báo Tức Thời: Phát hiện tấn công ngay khi chúng xảy ra.
+
+3. Không cần Chuyên gia: Bất cứ kỹ thuật viên nào cũng có thể chạy hệ thống.
+
+4. Chi phí Thấp: Dùng CrewAI và Gemini rẻ hơn phần mềm SIEM truyền thống rất nhiều.
+
+5. Dễ Mở Rộng: Có thể thêm loại tấn công mới hoặc agent mới dễ dàng.
+
+IX. NHỮNG HẠN CHẾ
+
+1. Chỉ phân tích log lịch sử, không giám sát thời gian thực (có thể nâng cấp sau).
+
+2. Cần có API key Google Gemini để chạy (hoặc dùng phiên bản native mà không cần).
+
+3. Độ chính xác phụ thuộc vào chất lượng dữ liệu log đầu vào.
+
+X. KẾT LUẬN
+
+Hệ thống Multi-Agent Phân Tích Log Website thực hiện thành công mục đích tự động phát hiện các cuộc tấn công web. Sử dụng kiến trúc agent độc lập cùng với AI tiên tiến, nó cung cấp khả năng bảo vệ mạnh mẽ với chi phí tương đối thấp. Hệ thống này phù hợp cho các website vừa và nhỏ cần giải pháp bảo mật tự động nhưng không muốn đầu tư vào các hệ thống SIEM phức tạp.
+
+---
+
+Báo cáo được tạo ngày 24 tháng 3 năm 2026

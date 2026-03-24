@@ -1,0 +1,105 @@
+# Multi-Agent System Configuration for Website Log Analysis
+
+system:
+  name: "Website Log Analysis & Attack Alert System"
+  version: "1.0.0"
+  description: "Multi-Agent system implementing Phase 1 (Reconnaissance) and Phase 2 (Vulnerability Assessment)"
+  phases:
+    - name: "Reconnaissance"
+      agents:
+        - log_collector
+        - pattern_analyzer
+    - name: "Vulnerability Assessment"
+      agents:
+        - threat_detector
+        - vulnerability_classifier
+    - name: "Reporting"
+      agents:
+        - report_generator
+        - alert_manager
+
+agents:
+  log_collector:
+    role: "Log Collection & Parsing Specialist"
+    goal: "Collect, parse and normalize website logs from multiple sources"
+    backstory: "Expert in log collection from web servers, understanding various log formats including Apache, Nginx, IIS"
+    tools: ["log_parser", "data_validator"]
+    
+  pattern_analyzer:
+    role: "Pattern Recognition Analyst"
+    goal: "Identify normal vs abnormal patterns in web logs through statistical analysis"
+    backstory: "Data scientist specialized in behavioral analysis and anomaly detection"
+    tools: ["pattern_matcher", "statistical_analyzer"]
+    
+  threat_detector:
+    role: "Threat Detection Engineer"
+    goal: "Detect potential security threats and attacks in web logs"
+    backstory: "Cybersecurity expert with deep knowledge of web attack vectors including SQL injection, XSS, DDoS"
+    tools: ["threat_signature_checker", "behavior_analyzer"]
+    
+  vulnerability_classifier:
+    role: "Vulnerability Assessment Specialist"
+    goal: "Classify vulnerabilities by severity and type"
+    backstory: "CVSS expert who categorizes vulnerabilities and maps them to known attack patterns"
+    tools: ["cvss_calculator", "vulnerability_db"]
+    
+  report_generator:
+    role: "Report Synthesis Specialist"
+    goal: "Compile findings into comprehensive, actionable security reports"
+    backstory: "Professional technical writer experienced in cybersecurity reporting"
+    tools: ["report_formatter", "statistics_engine"]
+    
+  alert_manager:
+    role: "Alert & Response Manager"
+    goal: "Generate real-time alerts for critical threats and coordinate responses"
+    backstory: "SOC coordinator experienced in incident response procedures"
+    tools: ["alert_formatter", "email_service"]
+
+tools:
+  log_parser:
+    description: "Parse various web log formats (Apache, Nginx, IIS)"
+    type: "utility"
+    
+  data_validator:
+    description: "Validate and clean log data"
+    type: "utility"
+    
+  pattern_matcher:
+    description: "Match log entries against known patterns"
+    type: "analysis"
+    
+  statistical_analyzer:
+    description: "Perform statistical analysis on log patterns"
+    type: "analysis"
+    
+  threat_signature_checker:
+    description: "Check logs against known threat signatures"
+    type: "security"
+    
+  behavior_analyzer:
+    description: "Analyze suspicious behavioral patterns"
+    type: "security"
+    
+  cvss_calculator:
+    description: "Calculate CVSS scores for vulnerabilities"
+    type: "security"
+    
+  vulnerability_db:
+    description: "Query vulnerability database (NVD, CVSS)"
+    type: "database"
+    
+  report_formatter:
+    description: "Format analysis results into reports"
+    type: "utility"
+    
+  statistics_engine:
+    description: "Generate statistics and charts for reporting"
+    type: "analysis"
+    
+  alert_formatter:
+    description: "Format and prepare alerts"
+    type: "utility"
+    
+  email_service:
+    description: "Send email alerts and notifications"
+    type: "communication"

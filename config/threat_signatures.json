@@ -1,0 +1,189 @@
+{
+  "threat_signatures": {
+    "sql_injection": {
+      "description": "SQL Injection Attack Attempt",
+      "patterns": [
+        " OR 1=1",
+        " OR 1=2",
+        "UNION SELECT",
+        "UNION ALL SELECT",
+        "DROP TABLE",
+        "DROP DATABASE",
+        "; DELETE",
+        "; UPDATE",
+        "exec(",
+        "execute(",
+        "xp_cmdshell",
+        "script.sql"
+      ],
+      "cvss_base": 7.5,
+      "cwe": "CWE-89",
+      "cwe_name": "Improper Neutralization of Special Elements used in an SQL Command",
+      "owasp": "A03:2021 – Injection"
+    },
+    "xss": {
+      "description": "Cross-Site Scripting (XSS) Attempt",
+      "patterns": [
+        "<script",
+        "onclick=",
+        "onerror=",
+        "javascript:",
+        "onload=",
+        "onmouseover=",
+        "<iframe",
+        "<object",
+        "<embed",
+        "onfocus=",
+        "onkeydown=",
+        "<svg"
+      ],
+      "cvss_base": 6.1,
+      "cwe": "CWE-79",
+      "cwe_name": "Improper Neutralization of Input During Web Page Generation",
+      "owasp": "A03:2021 – Injection"
+    },
+    "command_injection": {
+      "description": "OS Command Injection Attempt",
+      "patterns": [
+        "; ls",
+        "; cat",
+        " && ",
+        " || ",
+        " | cat",
+        "`whoami`",
+        "$(whoami)",
+        "| nc",
+        "; wget",
+        "; curl",
+        "& powershell"
+      ],
+      "cvss_base": 8.0,
+      "cwe": "CWE-78",
+      "cwe_name": "Improper Neutralization of Special Elements used in an OS Command",
+      "owasp": "A03:2021 – Injection"
+    },
+    "path_traversal": {
+      "description": "Path Traversal / Directory Traversal Attack",
+      "patterns": [
+        "../",
+        "..\\",
+        "%2e%2e",
+        "%2f",
+        "....//",
+        "....\\\\",
+        "etc/passwd",
+        "windows/system32",
+        "/admin",
+        "\\admin"
+      ],
+      "cvss_base": 7.5,
+      "cwe": "CWE-22",
+      "cwe_name": "Improper Limitation of a Pathname to a Restricted Directory",
+      "owasp": "A01:2021 – Broken Access Control"
+    },
+    "scanner_detection": {
+      "description": "Vulnerability Scanner Detection",
+      "patterns": [
+        "Nikto/",
+        "Nessus",
+        "OpenVAS",
+        "Burp",
+        "sqlmap",
+        "nmap",
+        "masscan",
+        "Acunetix",
+        "ZAProxy",
+        "Qualys",
+        "tenable"
+      ],
+      "cvss_base": 5.0,
+      "cwe": "CWE-200",
+      "cwe_name": "Exposure of Sensitive Information to an Unauthorized Actor",
+      "owasp": "A05:2021 – Security Misconfiguration"
+    },
+    "brute_force": {
+      "description": "Brute Force Authentication Attack",
+      "threshold": 10,
+      "time_window_seconds": 300,
+      "cvss_base": 9.8,
+      "cwe": "CWE-307",
+      "cwe_name": "Improper Restriction of Rendered UI Layers or Frames",
+      "owasp": "A07:2021 – Identification and Authentication Failures"
+    },
+    "ddos_pattern": {
+      "description": "Denial of Service / DDoS Attack Pattern",
+      "threshold": 100,
+      "cvss_base": 7.5,
+      "cwe": "CWE-400",
+      "cwe_name": "Uncontrolled Resource Consumption",
+      "owasp": "Not directly in OWASP Top 10"
+    },
+    "lfr": {
+      "description": "Local File Inclusion",
+      "patterns": [
+        "file://",
+        "php://",
+        "zip://",
+        "phar://",
+        "data://"
+      ],
+      "cvss_base": 7.5,
+      "cwe": "CWE-98",
+      "cwe_name": "Improper Control of Filename for Include/Require Statement"
+    },
+    "rfi": {
+      "description": "Remote File Inclusion",
+      "patterns": [
+        "http://",
+        "https://",
+        "ftp://"
+      ],
+      "cvss_base": 8.8,
+      "cwe": "CWE-94",
+      "cwe_name": "Improper Control of Generation of Code"
+    }
+  },
+  "severity_levels": {
+    "None": {"range": [0, 0], "color": "gray"},
+    "Low": {"range": [0.1, 3.9], "color": "blue"},
+    "Medium": {"range": [4.0, 6.9], "color": "yellow"},
+    "High": {"range": [7.0, 8.9], "color": "orange"},
+    "Critical": {"range": [9.0, 10.0], "color": "red"}
+  },
+  "response_recommendations": {
+    "Critical": {
+      "response_time": "< 1 hour",
+      "actions": [
+        "Block attacker IP immediately",
+        "Isolate affected systems",
+        "Notify all stakeholders",
+        "Begin incident investigation",
+        "Check for successful exploitation"
+      ]
+    },
+    "High": {
+      "response_time": "< 4 hours",
+      "actions": [
+        "Implement additional monitoring",
+        "Review affected logs",
+        "Prepare mitigation plan",
+        "Notify security team"
+      ]
+    },
+    "Medium": {
+      "response_time": "< 1 day",
+      "actions": [
+        "Schedule mitigation",
+        "Plan security improvements",
+        "Document findings"
+      ]
+    },
+    "Low": {
+      "response_time": "< 1 week",
+      "actions": [
+        "Log for future reference",
+        "Monitor for patterns"
+      ]
+    }
+  }
+}
