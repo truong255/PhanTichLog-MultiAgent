@@ -1,0 +1,13 @@
+{
+  "phase1_recon": {
+    "target": "localhost",
+    "open_ports": 1,
+    "vulnerabilities": 1
+  },
+  "phase2_threats": {
+    "total_logs": 150,
+    "threats_detected": 150,
+    "critical": 0
+  },
+  "timestamp": "2026-03-28T00:26:33.773356"
+}

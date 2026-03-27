@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3-Phase Penetration Test Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .timestamp {
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card.critical {
+            border-left-color: #d32f2f;
+        }
+        
+        .stat-card.warning {
+            border-left-color: #f57c00;
+        }
+        
+        .stat-card.info {
+            border-left-color: #1976d2;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #667eea;
+        }
+        
+        .stat-card.critical .stat-number {
+            color: #d32f2f;
+        }
+        
+        .stat-card.warning .stat-number {
+            color: #f57c00;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        table tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .severity-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            min-width: 80px;
+            display: inline-block;
+            font-size: 0.85em;
+        }
+        
+        .severity-critical {
+            background: #d32f2f;
+        }
+        
+        .severity-high {
+            background: #f57c00;
+        }
+        
+        .severity-medium {
+            background: #fbc02d;
+            color: #333;
+        }
+        
+        .severity-low {
+            background: #388e3c;
+        }
+        
+        .severity-info {
+            background: #1976d2;
+        }
+        
+        .port-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .phase-section {
+            border-left: 5px solid #667eea;
+        }
+        
+        .phase-section.phase1 {
+            border-left-color: #2196F3;
+        }
+        
+        .phase-section.phase2 {
+            border-left-color: #FF9800;
+        }
+        
+        .phase-section.phase3 {
+            border-left-color: #4CAF50;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        .no-data {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .chart-container, .section {
+                page-break-inside: avoid;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            header h1 {
+                font-size: 1.8em;
+            }
+            .stat-number {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 3-Phase Penetration Test Report</h1>
+            <p>Comprehensive Security Analysis Dashboard</p>
+            <div class="timestamp">Generated: 2026-03-28T00:26:33.782071</div>
+        </header>
+        
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Ports Opened</div>
+                <div class="stat-number">3</div>
+                <small>of 11 scanned</small>
+            </div>
+            <div class="stat-card critical">
+                <div class="stat-label">Critical Vulnerabilities</div>
+                <div class="stat-number">1</div>
+                <small>Total: 3</small>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-label">Threats Detected</div>
+                <div class="stat-number">150</div>
+                <small>Unique IPs: 105</small>
+            </div>
+            <div class="stat-card info">
+                <div class="stat-label">Analysis Time</div>
+                <div class="stat-number">1.23s</div>
+                <small>System performance</small>
+            </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <div class="chart-title">📊 Threat Severity Distribution</div>
+                <canvas id="severityChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🌐 Attack Methods</div>
+                <canvas id="methodsChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">📡 HTTP Status Codes</div>
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🎯 Network Attacks by IP</div>
+                <canvas id="ipsChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Phase 1: Reconnaissance -->
+        <div class="section phase-section phase1">
+            <div class="section-title">📍 Phase 1: Reconnaissance</div>
+            
+            <h3 style="margin-top: 20px; margin-bottom: 15px; color: #2196F3;">🔓 Open Ports</h3>
+            
+        <table>
+            <tr>
+                <th>Port</th>
+                <th>Service</th>
+                <th>Product</th>
+            </tr>
+            
+            <tr>
+                <td><span class="port-badge">5432</span></td>
+                <td><strong>PostgreSQL</strong></td>
+                <td>PostgreSQL Database</td>
+            </tr>
+            <tr>
+                <td><span class="port-badge">3000</span></td>
+                <td><strong>HTTP</strong></td>
+                <td>Express.js</td>
+            </tr>
+            <tr>
+                <td><span class="port-badge">80</span></td>
+                <td><strong>HTTP</strong></td>
+                <td>Apache/Nginx</td>
+            </tr>
+        </table>
+            
+            <h3 style="margin-top: 25px; margin-bottom: 15px; color: #2196F3;">⚠️ Reconnaissance Vulnerabilities</h3>
+            
+        <table>
+            <tr>
+                <th>Vulnerability</th>
+                <th>Severity</th>
+                <th>Description</th>
+            </tr>
+            
+            <tr>
+                <td>Weak SSL Configuration</td>
+                <td><span class="severity-badge severity-high">HIGH</span></td>
+                <td>SSL 3.0 detected</td>
+            </tr>
+            <tr>
+                <td>Default Credentials</td>
+                <td><span class="severity-badge severity-critical">CRITICAL</span></td>
+                <td>PostgreSQL default password</td>
+            </tr>
+            <tr>
+                <td>Service Enumeration</td>
+                <td><span class="severity-badge severity-medium">MEDIUM</span></td>
+                <td>Service versions exposed</td>
+            </tr>
+        </table>
+        
+        </div>
+        
+        <!-- Phase 2: Threat Analysis -->
+        <div class="section phase-section phase2">
+            <div class="section-title">📋 Phase 2: Vulnerability Assessment</div>
+            
+            <h3 style="margin-top: 20px; margin-bottom: 15px; color: #FF9800;">🚨 Detected Threats</h3>
+            
+        <table>
+            <tr>
+                <th>Source IP</th>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Status</th>
+                <th>Severity</th>
+            </tr>
+            
+            <tr>
+                <td>192.168.1.100</td>
+                <td>GET</td>
+                <td>/admin</td>
+                <td>200</td>
+                <td><span class="severity-badge severity-high">HIGH</span></td>
+            </tr>
+            <tr>
+                <td>192.168.1.101</td>
+                <td>POST</td>
+                <td>/api/login</td>
+                <td>401</td>
+                <td><span class="severity-badge severity-medium">MEDIUM</span></td>
+            </tr>
+            <tr>
+                <td>192.168.1.102</td>
+                <td>GET</td>
+                <td>/etc/passwd</td>
+                <td>404</td>
+                <td><span class="severity-badge severity-high">HIGH</span></td>
+            </tr>
+            <tr>
+                <td>192.168.1.103</td>
+                <td>DELETE</td>
+                <td>/api/users</td>
+                <td>403</td>
+                <td><span class="severity-badge severity-critical">CRITICAL</span></td>
+            </tr>
+            <tr>
+                <td>192.168.1.104</td>
+                <td>PUT</td>
+                <td>/api/config</td>
+                <td>500</td>
+                <td><span class="severity-badge severity-medium">MEDIUM</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.1</td>
+                <td>GET</td>
+                <td>/</td>
+                <td>200</td>
+                <td><span class="severity-badge severity-low">LOW</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.2</td>
+                <td>POST</td>
+                <td>/admin</td>
+                <td>404</td>
+                <td><span class="severity-badge severity-medium">MEDIUM</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.3</td>
+                <td>PUT</td>
+                <td>/api</td>
+                <td>500</td>
+                <td><span class="severity-badge severity-high">HIGH</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.4</td>
+                <td>DELETE</td>
+                <td>/config</td>
+                <td>403</td>
+                <td><span class="severity-badge severity-critical">CRITICAL</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.5</td>
+                <td>GET</td>
+                <td>/download</td>
+                <td>401</td>
+                <td><span class="severity-badge severity-info">INFO</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.6</td>
+                <td>POST</td>
+                <td>/</td>
+                <td>200</td>
+                <td><span class="severity-badge severity-low">LOW</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.7</td>
+                <td>PUT</td>
+                <td>/admin</td>
+                <td>404</td>
+                <td><span class="severity-badge severity-medium">MEDIUM</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.8</td>
+                <td>DELETE</td>
+                <td>/api</td>
+                <td>500</td>
+                <td><span class="severity-badge severity-high">HIGH</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.9</td>
+                <td>GET</td>
+                <td>/config</td>
+                <td>403</td>
+                <td><span class="severity-badge severity-critical">CRITICAL</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.10</td>
+                <td>POST</td>
+                <td>/download</td>
+                <td>401</td>
+                <td><span class="severity-badge severity-info">INFO</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.11</td>
+                <td>PUT</td>
+                <td>/</td>
+                <td>200</td>
+                <td><span class="severity-badge severity-low">LOW</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.12</td>
+                <td>DELETE</td>
+                <td>/admin</td>
+                <td>404</td>
+                <td><span class="severity-badge severity-medium">MEDIUM</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.13</td>
+                <td>GET</td>
+                <td>/api</td>
+                <td>500</td>
+                <td><span class="severity-badge severity-high">HIGH</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.14</td>
+                <td>POST</td>
+                <td>/config</td>
+                <td>403</td>
+                <td><span class="severity-badge severity-critical">CRITICAL</span></td>
+            </tr>
+            <tr>
+                <td>10.0.0.15</td>
+                <td>PUT</td>
+                <td>/download</td>
+                <td>401</td>
+                <td><span class="severity-badge severity-info">INFO</span></td>
+            </tr>
+        </table>
+            <p class="no-data">Showing first 20 of 150 threats</p>
+        </div>
+        
+        <!-- Phase 3: Summary -->
+        <div class="section phase-section phase3">
+            <div class="section-title">✅ Phase 3: Analysis Summary</div>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Total Vulnerabilities Found</td>
+                    <td><strong>3</strong></td>
+                </tr>
+                <tr>
+                    <td>Critical Issues</td>
+                    <td><span class="severity-badge severity-critical">1</span></td>
+                </tr>
+                <tr>
+                    <td>Total Threats Analyzed</td>
+                    <td><strong>150</strong></td>
+                </tr>
+                <tr>
+                    <td>Unique Attack Sources</td>
+                    <td><strong>105</strong></td>
+                </tr>
+                <tr>
+                    <td>Report Generated</td>
+                    <td>2026-03-28T00:26:33.782071</td>
+                </tr>
+            </table>
+        </div>
+        
+        <footer>
+            <p>🔒 Confidential - Penetration Test Report</p>
+            <p>Generated by Multi-Agent Security Analysis System</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Severity Distribution Chart
+        const severityCtx = document.getElementById('severityChart').getContext('2d');
+        new Chart(severityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Critical', 'High', 'Medium', 'Low', 'Info'],
+                datasets: [{
+                    data: [30, 31, 31, 29, 29],
+                    backgroundColor: ['#d32f2f', '#f57c00', '#fbc02d', '#388e3c', '#1976d2'],
+                    borderColor: ['#fff', '#fff', '#fff', '#fff', '#fff'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: { size: 12, weight: 'bold' }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Attack Methods Chart
+        const methodsCtx = document.getElementById('methodsChart').getContext('2d');
+        new Chart(methodsCtx, {
+            type: 'bar',
+            data: {
+                labels: ["GET", "POST", "DELETE", "PUT"],
+                datasets: [{
+                    label: 'Count',
+                    data: [39, 37, 37, 37],
+                    backgroundColor: '#667eea',
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { 
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+        
+        // HTTP Status Codes Chart
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        new Chart(statusCtx, {
+            type: 'pie',
+            data: {
+                labels: [200, 401, 404, 403, 500],
+                datasets: [{
+                    data: [30, 30, 30, 30, 30],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Top Attack Sources Chart
+        const ipsCtx = document.getElementById('ipsChart').getContext('2d');
+        new Chart(ipsCtx, {
+            type: 'bar',
+            data: {
+                labels: ["192.168.1.100", "192.168.1.101", "192.168.1.102", "192.168.1.103", "192.168.1.104", "10.0.0.1", "10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5"],
+                datasets: [{
+                    label: 'Attacks',
+                    data: [1, 1, 1, 1, 1, 2, 2, 2, 2, 2],
+                    backgroundColor: '#ff7043',
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# iptables Rules
+iptables -A INPUT -s 193.0.113.99 -j DROP
+iptables -A INPUT -s 198.51.100.50 -j DROP
+iptables -A INPUT -s 172.16.0.1 -j DROP
+iptables -A INPUT -s 203.0.113.25 -j DROP
+iptables -A INPUT -s 192.168.1.103 -j DROP
+iptables -A INPUT -s 198.51.100.5 -j DROP
+iptables -A INPUT -s 203.0.113.77 -j DROP
+iptables -A INPUT -s 192.0.2.200 -j DROP
+iptables -A INPUT -s 10.0.0.50 -j DROP
+iptables -A INPUT -s 203.0.113.1 -j DROP
